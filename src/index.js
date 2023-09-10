@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, onSnapshot, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFaNNJ972VXPrQaI3YJoCbsYa4LjmJ97k",
@@ -26,3 +26,33 @@ getDocs(colRef)
 .catch(error => {
     console.log(error);
 })
+
+// onSnapshot(colRef, () => {
+//     let movies = [];
+//     data.docs.foreEach(document => {
+//         movies.push({...document.data(), id: document.id});
+//     });
+//     console.log(movies);
+// });
+
+const addForm = document.querySelector(".add");
+addForm.addEventListener("submit", event => {
+    event.preventDefault();
+    addDoc(colRef, {
+        name: addForm.name.value,
+        description: addForm.description.value
+    })
+    .then(() => {
+        addForm.reset();
+    });
+});
+
+const deleteForm = document.querySelector(".delete");
+deleteForm.addEventListener("submit", event => {
+    event.preventDefault();
+    
+    const documentReference = doc(db, "movies", deleteForm.id.value);
+    deleteDoc(documentReference).then(() => {
+        deleteForm.reset();
+    });
+});
